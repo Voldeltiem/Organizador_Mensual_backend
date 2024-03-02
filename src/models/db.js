@@ -1,12 +1,12 @@
 //acceso a la base de datos 
 const { Pool } = require("pg");
 
-const connection = new Pool({
-  host: "localhost",
+const dbConnection = new Pool({
+  host: "localhost", //dpg-cn7qjjmn7f5s73c8vo60-a localhost
   port: 5432,
-  user: "postgres",
-  password: "Knight123", //"Knight123"
-  database: "project_jwt",
+  user: "postgres", //postgres admin
+  password: "Knight123", //"Knight123" vV2VrnsRQQcQuFfMSubKI0v1WjuhKUr2
+  database: "project_jwt", //market_place_zfy4 project_jwt
 });
 
-module.exports = {connection};
+module.exports = dbConnection;

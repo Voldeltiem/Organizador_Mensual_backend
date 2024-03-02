@@ -1,16 +1,16 @@
-const connection = require('../models/db');
+const dbConnection = require('../models/db');
 
-module.exports.ping = (req, res) =>{
+module.exports.ping = async (req, res) => {
 
-    const consulta ='SELECT * FROM login';
+    const consulta = 'SELECT * FROM login';
 
     try {
-        connection.query(consulta, (err, results)=>{
+        await dbConnection.query(consulta, (err, results) => {
             console.log(results);
-            res.json(results)
+            res.json(results);
         });
-        
     } catch (e) {
-        
+
     }
+
 }
