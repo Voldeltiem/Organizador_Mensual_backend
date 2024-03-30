@@ -5,14 +5,10 @@ CREATE DATABASE project_jwt;
 \c project_jwt;
 
 -- Crear la tabla login
-CREATE TABLE public.login (
-    username character varying(50) NOT NULL,
-    password character varying(50) NOT NULL,
-    PRIMARY KEY (username, password)
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL
 );
 
-INSERT INTO login (username, password) VALUES
-    ('usuario1', 'hashed_password1'),
-    ('usuario2', 'hashed_password2'),
-    ('usuario3', 'hashed_password3')
-;

@@ -1,28 +1,27 @@
 const dbConnection = require('../models/db');
 const jwt = require('jsonwebtoken');
+const bcryptjs = require('bcryptjs');
 
 module.exports.login = async (req, res) => {
-    const { username, password } = req.body;
-    console.log('Solicitud de login recibida');
+    const { email, password } = req.body;
+    const consulta = "SELECT * FROM users WHERE email = $1";
+    const { rows: [users], rowCount } = await dbConnection.query(consulta, [email]);
 
-    const consulta = 'SELECT * FROM login where username = $1 and password = $2';
-    try {
-        const result = await dbConnection.query(consulta, [username, password]);
-
-        if (result.rows.length > 0) {
-            const token = jwt.sign({username}, 'Stack',{
-                expiresIn: '3m'
-            })
-            console.log({token});
-            res.send({token});
-        } else {
-            console.log('usuario o contraseña incorrecta');
-            res.status(401).send({ message: 'Usuario o contraseña invalidos' })
-
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ message: 'Error en el servidor' });
+    if (!users || !rowCount) {
+        // Lanzar una excepción indicando que el usuario o la contraseña son incorrectos
+        throw { code: 401, message: "Usuario o contraseña incorrecto" };
     }
+    // Extraer la contraseña encriptada del usuario devuelto por la consulta
+    const { password: passwordEncriptada } = users;
+    const passwordCorrecta = bcryptjs.compareSync(password, passwordEncriptada);
+    // Si la contraseña proporcionada no coincide con la contraseña encriptada almacenada, o no se encontró ningún usuario
+    if (!passwordCorrecta) {
+        // Lanzar una excepción indicando que el usuario o la contraseña son incorrectos
+        return res.send( { message: "Usuario o contraseña incorrecto" });
+    }
+    const token = jwt.sign({ email }, "stanco", {
+        expiresIn: '10m' 
+    });
 
+    res.send({ token });
 }
